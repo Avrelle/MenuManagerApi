@@ -36,7 +36,6 @@ class Plate
     #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'plate')]
     private Collection $menus;
 
-
     public function __construct()
     {
         $this->orderDescriptions = new ArrayCollection();
@@ -149,4 +148,5 @@ class Plate
 
         return $this;
     }
+
 }

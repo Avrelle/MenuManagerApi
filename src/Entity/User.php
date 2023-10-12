@@ -6,11 +6,13 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ApiResource]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,6 +30,9 @@ class User
 
     #[ORM\Column(length: 10)]
     private ?string $phone = null;
+    
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -44,6 +49,15 @@ class User
     {
         return $this->id;
     }
+     /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
 
     public function getUsername(): ?string
     {
@@ -53,6 +67,25 @@ class User
     public function setUsername(string $username): static
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+     /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }
@@ -68,7 +101,10 @@ class User
 
         return $this;
     }
-
+    
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -104,6 +140,16 @@ class User
 
         return $this;
     }
+    
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
 
     /**
      * @return Collection<int, Order>

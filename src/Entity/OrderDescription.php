@@ -34,6 +34,9 @@ class OrderDescription
     #[ORM\ManyToMany(targetEntity: Plate::class, inversedBy: 'orderDescriptions')]
     private Collection $plate;
 
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $choice = null;
+
     public function __construct()
     {
         
@@ -130,6 +133,18 @@ class OrderDescription
     public function removePlate(Plate $plate): static
     {
         $this->plate->removeElement($plate);
+
+        return $this;
+    }
+
+    public function getChoice(): ?array
+    {
+        return $this->choice;
+    }
+
+    public function setChoice(?array $choice): static
+    {
+        $this->choice = $choice;
 
         return $this;
     }
