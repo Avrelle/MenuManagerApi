@@ -22,7 +22,7 @@ class OrderDescription
     #[ORM\ManyToOne(inversedBy: 'orderDescriptions')]
     private ?Order $order_desc = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
     #[ORM\Column]
